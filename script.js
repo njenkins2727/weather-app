@@ -71,11 +71,19 @@ searchForm.addEventListener('submit', function(event){
    currentImg.src = iconUrl
    dailyfunction(weatherData.daily);
   //store city name in local storage 
-  localStorage.setItem('city', JSON.stringify(userInput));
+
+  let cities = localStorage.getItem('cities') || [];
+  cities.push(userInput)
+  
+    cities = [];
+    
+  localStorage.setItem('cities', JSON.stringify(cities));
 
 //   display name as buttons under search bar
 
 })
+
+
 
 })
 
