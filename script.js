@@ -32,14 +32,36 @@ function getWeatherData(city){
     })
 }
 
+//helper function
+function getLocalStorage(key){
+  return JSON.parse(localStorage.getItem(key)) || [];
+}
+
+//main localstorage function
+function storeLocations(key, inputname){
+
+ //get the prevSearch array 
+ const prevSearch = getLocalStorage(key)
+
+ //push new userInput into array 
+ prevSearch.push(inputname);
+
+ if (prevSearch.length > 2) {
+     prevSearch.splice(0, 1);
+ }
+
+ // resave this new array into local sotrage 
+ localStorage.setItem(key, JSON.stringify(prevSearch))
+
+}
+
+
 //when user clicks on search button 
 searchForm.addEventListener('submit', function(event){
     event.preventDefault();
 
   // get user input 
  const userInput = searchInput.value;
-
-    // sent request to weatherdashboard api
 
   //fetch weather data based on city name 
   getWeatherData(userInput)
@@ -70,20 +92,36 @@ searchForm.addEventListener('submit', function(event){
     const iconUrl = "http://openweathermap.org/img/w/" + dailyIcon +".png";
    currentImg.src = iconUrl
    dailyfunction(weatherData.daily);
-  //store city name in local storage 
 
-  let cities = localStorage.getItem('cities') || [];
-  cities.push(userInput)
-  
-    cities = [];
-    
-  localStorage.setItem('cities', JSON.stringify(cities));
+   storeLocations('cities', userInput);
 
-//   display name as buttons under search bar
+ let cityNames = JSON.parse(localStorage.getItem('cities')) ||[];
+
+  function diffName(cities){
+      return `${cities}`;
+  }
+
+  const newBtn = document.createElement('button');
+  newBtn.setAttribute('id', 'new-button');
+
+  for (let i = 0; i < cityNames.length; i++) {
+      const showCity = cityNames[i];
+
+      const locations = diffName(showCity);
+
+      newBtn.textContent = locations;
+
+      searchForm.append(newBtn);
+
+    //   if (showCity[0]) {
+    //       newBtn.classList.add('hide');
+    // }
+
+  }
+
+
 
 })
-
-
 
 })
 
